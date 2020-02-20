@@ -4,7 +4,7 @@ main.py
 import json
 
 
-from utils.csv_to_jsoner import CsvToJsoner
+from utils.csv_converter import CsvConverter
 from common.wujiang import Wujiang
 
 
@@ -12,8 +12,9 @@ def dump_json():
     """
     Dumps csv to json
     """
-    csv_to_jsoner = CsvToJsoner()
-    csv_to_jsoner.to_json()
+    csv_converter = CsvConverter()
+    csv_converter.to_json()
+    csv_converter.close()
 
 
 def get_character():
@@ -27,5 +28,14 @@ def get_character():
         print(attr, ': ', value)
 
 
+def to_sqlite():
+    """
+    Dumps csv to sqlite
+    """
+    csv_conveter = CsvConverter()
+    csv_conveter.to_sqlite()
+    csv_conveter.close()
+
+
 if __name__ == "__main__":
-    get_character()
+    to_sqlite()
