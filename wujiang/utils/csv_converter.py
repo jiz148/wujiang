@@ -43,7 +43,7 @@ class CsvConverter:
 
         cur = conn.cursor()
 
-        cur.execute("CREATE TABLE wujiang_index("
+        cur.execute("CREATE TABLE wujiang("
                     "id INTEGER PRIMARY KEY,"
                     "level NUMERIC,"
                     "profession TEXT,"
@@ -51,7 +51,7 @@ class CsvConverter:
                     "attack NUMERIC,"
                     "defense NUMERIC,"
                     "speed NUMERIC,"
-                    "range NUMERIC,"
+                    "ranging NUMERIC,"
                     "mag NUMERIC,"
                     "spells TEXT,"
                     "specs TEXT,"
@@ -60,12 +60,14 @@ class CsvConverter:
         reader = csv.reader(self.csv_file)
 
         for row in reader:
-            cur.execute("INSERT INTO wujiang_index("
+            cur.execute("INSERT INTO wujiang("
                         "level,"
                         "profession,"
-                        "name, attack,"
-                        "defense, speed,"
-                        "range,"
+                        "name, "
+                        "attack,"
+                        "defense, "
+                        "speed,"
+                        "ranging,"
                         "mag,"
                         "spells,"
                         "specs,"
