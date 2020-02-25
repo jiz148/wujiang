@@ -5,6 +5,7 @@ import os
 
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import sessionmaker
 from flask_marshmallow import Marshmallow
 
 # init app
@@ -36,18 +37,7 @@ class Wujiang(db.Model):
     specs = db.Column(db.String(500))
     scepter = db.Column(db.String(500))
 
-    def __init__(self,
-                 name,
-                 level,
-                 profession,
-                 attack,
-                 defense,
-                 speed,
-                 ranging,
-                 mag,
-                 spells,
-                 specs,
-                 scepter):
+    def __init__(self, name, level, profession, attack, defense, speed, ranging, mag, spells, specs, scepter):
         self.name = name
         self.level = level
         self.profession = profession
@@ -83,8 +73,12 @@ def get_product(id):
 @app.route('/wujiang', methods=['GET'])
 def get_wujiangs():
     all_wujiangs = Wujiang.query.all()
-    result = wujiangs_schema.dump(all_wujiangs)
-    return jsonify(result)
+    name = request.args.get("name", "")
+    # result = SQLAlchemy.session.query(Wujiang).get({"name": name})
+    result = Wujiang.query.filter_by(name=name)
+    print(result)
+    # result = wujiangs_schema.dump(all_wujiangs)
+    return wujiangs_schema.jsonify(result)
 
 
 # Run Server
