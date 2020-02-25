@@ -3,9 +3,11 @@ Wujiang API
 """
 import os
 
-from flask import Flask, request, jsonify
+from flask import abort, Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
+from sqlalchemy import exc
+
 
 # init app
 app = Flask(__name__)
@@ -36,18 +38,7 @@ class Wujiang(db.Model):
     specs = db.Column(db.String(500))
     scepter = db.Column(db.String(500))
 
-    def __init__(self,
-                 name,
-                 level,
-                 profession,
-                 attack,
-                 defense,
-                 speed,
-                 ranging,
-                 mag,
-                 spells,
-                 specs,
-                 scepter):
+    def __init__(self, name, level, profession, attack, defense, speed, ranging, mag, spells, specs, scepter):
         self.name = name
         self.level = level
         self.profession = profession
@@ -64,7 +55,20 @@ class Wujiang(db.Model):
 # wujiang Schema
 class WujiangSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'name', 'level', 'profession', 'attack', 'defense', 'speed', 'ranging', 'mag', 'spells', 'specs', 'scepter')
+        fields = (
+            'id',
+            'name',
+            'level',
+            'profession',
+            'attack',
+            'defense',
+            'speed',
+            'ranging',
+            'mag',
+            'spells',
+            'specs',
+            'scepter'
+        )
 
 
 # init schema
@@ -75,16 +79,29 @@ wujiangs_schema = WujiangSchema(many=True)
 # Get Single Wujiang
 @app.route('/wujiang/<id>', methods=['GET'])
 def get_product(id):
-    wujiang = Wujiang.query.get(id)
+    wujiang = Wujiang.query.get_or_404(id)
     return wujiang_schema.jsonify(wujiang)
 
 
 # get all Product
 @app.route('/wujiang', methods=['GET'])
 def get_wujiangs():
-    all_wujiangs = Wujiang.query.all()
-    result = wujiangs_schema.dump(all_wujiangs)
-    return jsonify(result)
+    result = Wujiang.query
+    arg_keys, arg_values = request.args.keys(), request.args.values()
+    for key, value in zip(arg_keys, arg_values):
+        try:
+            if key == 'spells':
+                search = '%{}%'.format(value)
+                result = result.filter(Wujiang.spells.like(search))
+            elif key == 'specs':
+                search = '%{}%'.format(value)
+                result = result.filter(Wujiang.specs.like(search))
+            else:
+                result = result.filter_by(**{key: value})
+        except exc.InvalidRequestError:
+            abort(400)
+
+    return wujiangs_schema.jsonify(result) if result.all() else abort(404)
 
 
 # Run Server
