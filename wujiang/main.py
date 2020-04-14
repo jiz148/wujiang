@@ -55,4 +55,4 @@ def print_imgs():
 
 
 if __name__ == "__main__":
-    to_sqlite()
+    print_imgs()

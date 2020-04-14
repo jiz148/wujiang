@@ -29,6 +29,8 @@ class Wujiang(db.Model):
     name = db.Column(db.String(100), unique=True)
     level = db.Column(db.Integer)
     profession = db.Column(db.String(100))
+    type = db.Column(db.String(100))
+    race = db.Column(db.String(100))
     attack = db.Column(db.Float)
     defense = db.Column(db.Float)
     speed = db.Column(db.Float)
@@ -36,12 +38,13 @@ class Wujiang(db.Model):
     mag = db.Column(db.Float)
     spells = db.Column(db.String(500))
     specs = db.Column(db.String(500))
-    scepter = db.Column(db.String(500))
 
-    def __init__(self, name, level, profession, attack, defense, speed, ranging, mag, spells, specs, scepter):
+    def __init__(self, name, level, profession, type, race, attack, defense, speed, ranging, mag, spells, specs):
         self.name = name
         self.level = level
         self.profession = profession
+        self.type = type
+        self.race = race
         self.attack = attack
         self.defense = defense
         self.speed = speed
@@ -49,7 +52,6 @@ class Wujiang(db.Model):
         self.mag = mag
         self.spells = spells
         self.specs = specs
-        self.scepter = scepter
 
 
 # wujiang Schema
@@ -60,6 +62,8 @@ class WujiangSchema(ma.Schema):
             'name',
             'level',
             'profession',
+            'type',
+            'race',
             'attack',
             'defense',
             'speed',
@@ -67,7 +71,6 @@ class WujiangSchema(ma.Schema):
             'mag',
             'spells',
             'specs',
-            'scepter'
         )
 
 
@@ -81,8 +84,6 @@ wujiangs_schema = WujiangSchema(many=True)
 def add_wujiang():
     attrs = _get_all_attrs()
 
-    print(attrs)
-
     new_wujiang = Wujiang(
         attrs[0],
         attrs[1],
@@ -94,7 +95,8 @@ def add_wujiang():
         attrs[7],
         attrs[8],
         attrs[9],
-        attrs[10])
+        attrs[10],
+        attrs[11])
 
     db.session.add(new_wujiang)
     db.session.commit()
@@ -104,13 +106,13 @@ def add_wujiang():
 
 # Get Single Wujiang
 @app.route('/wujiang/<id>', methods=['GET'])
-def get_product(id):
+def get_wujiang(id):
     wujiang = Wujiang.query.get_or_404(id)
     return wujiang_schema.jsonify(wujiang)
 
 
-# get all Product
-@app.route('/wujiang', methods=['GET'])
+# get all Wujiangs
+@app.route('/wujiang/', methods=['GET'])
 def get_wujiangs():
     result = Wujiang.query
     arg_keys, arg_values = request.args.keys(), request.args.values()
@@ -126,7 +128,7 @@ def get_wujiangs():
                 result = result.filter_by(**{key: value})
         except exc.InvalidRequestError:
             abort(400)
-
+    # print('result!!!!!!!!! is !!!!', result.all())
     return wujiangs_schema.jsonify(result) if result.all() else abort(404)
 
 
@@ -147,7 +149,7 @@ def update_wujiang(id):
 
 # Delete Wujiang
 @app.route('/wujiang/<id>', methods=['DELETE'])
-def delete_product(id):
+def delete_wujiang(id):
     deleting_wujiang = Wujiang.query.get_or_404(id)
     db.session.delete(deleting_wujiang)
     db.session.commit()
@@ -163,6 +165,8 @@ def _get_all_attrs():
     name = request.json.get('name')
     level = request.json.get('level')
     profession = request.json.get('profession')
+    type = request.json.get('type')
+    race = request.json.get('race')
     attack = request.json.get('attack')
     defense = request.json.get('defense')
     speed = request.json.get('speed')
@@ -170,9 +174,8 @@ def _get_all_attrs():
     mag = request.json.get('mag')
     spells = request.json.get('spells')
     specs = request.json.get('specs')
-    scepter = request.json.get('scepter')
 
-    return name, level, profession, attack, defense, speed, ranging, mag, spells, specs, scepter
+    return name, level, profession, type, race, attack, defense, speed, ranging, mag, spells, specs
 
 
 def _update_all_attrs(wujiang, attrs):
@@ -189,21 +192,23 @@ def _update_all_attrs(wujiang, attrs):
     if attrs[2]:
         wujiang.profession = attrs[2]
     if attrs[3]:
-        wujiang.attack = attrs[3]
+        wujiang.type = attrs[3]
     if attrs[4]:
-        wujiang.defense = attrs[4]
+        wujiang.race = attrs[4]
     if attrs[5]:
-        wujiang.speed = attrs[5]
+        wujiang.attack = attrs[5]
     if attrs[6]:
-        wujiang.ranging = attrs[6]
+        wujiang.defense = attrs[6]
     if attrs[7]:
-        wujiang.mag = attrs[7]
+        wujiang.speed = attrs[7]
     if attrs[8]:
-        wujiang.spells = attrs[8]
+        wujiang.ranging = attrs[8]
     if attrs[9]:
-        wujiang.specs = attrs[9]
+        wujiang.mag = attrs[9]
     if attrs[10]:
-        wujiang.scepter = attrs[10]
+        wujiang.spells = attrs[10]
+    if attrs[11]:
+        wujiang.specs = attrs[11]
 
     return wujiang
 

@@ -22,7 +22,7 @@ class CsvConverter:
         self.data_path = data_path
         self.csv_name = csv_name
         self.csv_path = os.path.join(self.data_path, self.csv_name)
-        self.csv_file = open(self.csv_path)
+        self.csv_file = open(self.csv_path, encoding='utf-8')
 
     def to_json(self, json_name=JSON_NAME):
         data = {}
@@ -31,7 +31,7 @@ class CsvConverter:
             name = rows['名称']  # name as a key
             data[name] = rows
         json_path = os.path.join(DATA_PATH, json_name)
-        with open(json_path, 'w') as json_file:
+        with open(json_path, 'w+') as json_file:
             json_file.write(json.dumps(data, indent=4))
 
     def to_sqlite(self, sqlite_name=SQLITE_NAME):
@@ -47,6 +47,8 @@ class CsvConverter:
                     "id INTEGER PRIMARY KEY,"
                     "level NUMERIC,"
                     "profession TEXT,"
+                    "type TEXT,"
+                    "race TEXT,"
                     "name TEXT,"
                     "attack NUMERIC,"
                     "defense NUMERIC,"
@@ -54,8 +56,7 @@ class CsvConverter:
                     "ranging NUMERIC,"
                     "mag NUMERIC,"
                     "spells TEXT,"
-                    "specs TEXT,"
-                    "scepter TEXT)")
+                    "specs TEXT)")
 
         reader = csv.reader(self.csv_file)
 
@@ -63,15 +64,16 @@ class CsvConverter:
             cur.execute("INSERT INTO wujiang("
                         "level,"
                         "profession,"
-                        "name, "
+                        "type,"
+                        "race,"
+                        "name,"
                         "attack,"
-                        "defense, "
+                        "defense,"
                         "speed,"
                         "ranging,"
                         "mag,"
                         "spells,"
-                        "specs,"
-                        "scepter) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", row)
+                        "specs) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", row)
         conn.commit()
 
     def close(self):

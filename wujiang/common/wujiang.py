@@ -35,6 +35,8 @@ class Wujiang:
         character = data.get(name)
         self.level = int(character.get('等级'))
         self.profession = character.get('职业')
+        self.type = character.get('属性')
+        self.race = character.get('种族')
         self.name = character.get('名称')
         self.attack = character.get('攻')
         self.defense = character.get('受')
@@ -43,7 +45,7 @@ class Wujiang:
         self.mag = character.get('魔')
         self.spells = character.get('技能')
         self.specs = character.get('性质')
-        self.scepter = character.get('神杖加强')
+        # self.scepter = character.get('神杖加强')
 
     def random(self):
         """
@@ -67,6 +69,8 @@ class Wujiang:
 
         draw.text((10, 10), self.name, font=ImageFont.truetype(regular_font_path, 30), fill='black')
         draw.text((410, 10), str(self.level), font=ImageFont.truetype(regular_font_path, 30), fill='black')
+        draw.text((10, 50), str(self.type), font=ImageFont.truetype(regular_font_path, 15), fill='black')
+        draw.text((50, 50), str(self.race), font=ImageFont.truetype(regular_font_path, 15), fill='black')
         draw.text((400, 40), str(self.profession), font=ImageFont.truetype(regular_font_path, 20), fill='black')
         draw.text((10, 80), '攻: ' + self.attack, font=ImageFont.truetype(regular_font_path, 20), fill='black')
         draw.text((100, 80), '受: ' + self.defense, font=ImageFont.truetype(regular_font_path, 20), fill='black')
