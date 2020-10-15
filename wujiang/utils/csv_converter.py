@@ -11,7 +11,7 @@ import sqlite3
 PY_FILE_PATH = os.path.dirname(os.path.realpath(__file__))
 PROJECT_PATH = os.path.dirname(PY_FILE_PATH)
 DATA_PATH = os.path.join(PROJECT_PATH, 'data')
-CSV_NAME = '武将yoo - 武将.csv'
+CSV_NAME = '武将yoo - demo.csv'
 JSON_NAME = 'wujiang_index.json'
 SQLITE_NAME = 'wujiang_index.db'
 
