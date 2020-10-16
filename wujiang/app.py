@@ -124,6 +124,9 @@ def get_wujiangs():
             elif key == 'specs':
                 search = '%{}%'.format(value)
                 result = result.filter(Wujiang.specs.like(search))
+            elif key == 'name':
+                search = '%{}%'.format(value)
+                result = result.filter(Wujiang.name.like(search))
             else:
                 result = result.filter_by(**{key: value})
         except exc.InvalidRequestError:
