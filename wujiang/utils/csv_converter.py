@@ -39,6 +39,8 @@ class CsvConverter:
         Converter csv file to sqlite3 file
         """
         sqlite_path = os.path.join(DATA_PATH, sqlite_name)
+        if os.path.exists(sqlite_path):
+            os.remove(sqlite_path)
         conn = sqlite3.connect(sqlite_path)
 
         cur = conn.cursor()
